@@ -40,6 +40,7 @@ import (
 
 	"github.com/aoscloud/aos_servicemanager/config"
 	"github.com/aoscloud/aos_servicemanager/utils/uidgidpool"
+	"github.com/aoscloud/aos_servicemanager/utils/whiteouts"
 )
 
 /***********************************************************************************************************************
@@ -645,6 +646,10 @@ func (sm *ServiceManager) prepareServiceFS(
 
 		return nil
 	}); err != nil {
+		return 0, nil, "", aoserrors.Wrap(err)
+	}
+
+	if err := whiteouts.OCIWhiteoutsToOverlay(tmpRootFS, 0, gid); err != nil {
 		return 0, nil, "", aoserrors.Wrap(err)
 	}
 
