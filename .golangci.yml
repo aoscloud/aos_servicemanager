@@ -29,6 +29,7 @@ linters:
     - tparallel
     - unparam
     - wastedassign
+    - nosnakecase
 
 linters-settings:
   revive:

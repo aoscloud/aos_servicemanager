@@ -211,7 +211,11 @@ func TestInstallService(t *testing.T) {
 
 	_ = os.Rename(urlVal.Path, filepath.Join(fileServerDir, "downloadImage"))
 
-	server := &http.Server{Addr: ":9000", Handler: http.FileServer(http.Dir(fileServerDir))}
+	server := &http.Server{
+		Addr:              ":9000",
+		Handler:           http.FileServer(http.Dir(fileServerDir)),
+		ReadHeaderTimeout: 10 * time.Second,
+	}
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {

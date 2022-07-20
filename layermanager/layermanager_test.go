@@ -468,7 +468,11 @@ func TestRemoteDownloadLayer(t *testing.T) {
 		t.Fatalf("Can't rename directory: %v", err)
 	}
 
-	server := &http.Server{Addr: ":9000", Handler: http.FileServer(http.Dir(fileServerDir))}
+	server := &http.Server{
+		Addr:              ":9000",
+		Handler:           http.FileServer(http.Dir(fileServerDir)),
+		ReadHeaderTimeout: 10 * time.Second,
+	}
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
