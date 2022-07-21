@@ -37,6 +37,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/aoscloud/aos_servicemanager/config"
+	"github.com/aoscloud/aos_servicemanager/utils/whiteouts"
 )
 
 /***********************************************************************************************************************
@@ -340,8 +341,8 @@ func (layermanager *LayerManager) doInstallLayer(
 		}
 	}()
 
-	if err = image.UnpackTarImage(layerPath, installInfo.Path); err != nil {
-		return aoserrors.Wrap(err)
+	if err = unpackLayer(layerPath, installInfo.Path); err != nil {
+		return err
 	}
 
 	if layerDescriptor.Platform != nil {
@@ -609,4 +610,16 @@ func releaseAllocatedSpace(path string, spaceLayer spaceallocator.Space) {
 	if err := spaceLayer.Release(); err != nil {
 		log.Errorf("Can't release memory: %v", err)
 	}
+}
+
+func unpackLayer(source, destination string) error {
+	if err := image.UnpackTarImage(source, destination); err != nil {
+		return aoserrors.Wrap(err)
+	}
+
+	if err := whiteouts.OCIWhiteoutsToOverlay(destination, 0, 0); err != nil {
+		return aoserrors.Wrap(err)
+	}
+
+	return nil
 }
