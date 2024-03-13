@@ -31,7 +31,7 @@ require (
 	golang.org/x/mod v0.10.0
 	golang.org/x/sys v0.15.0
 	google.golang.org/grpc v1.59.0
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
